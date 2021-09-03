@@ -10,6 +10,12 @@
   {% for listMovie in listMovies %}
         <div>{{ listMovie.title }}</div>
         <div>{{ listMovie.id }}</div>
+        <a href="/show/{{ listMovie.id }}" onclick="javascript:window.open(this.href,'nom_Popup',
+                           'height=400 , width=400 ,
+                            location=no ,
+                            resizable=yes ,
+                            scrollbars=yes');return false;">
+        <img src="https://image.tmdb.org/t/p/w500/{{listMovie.image}}" alt=""></a>
 {% endfor %}
 </div>
 {% endblock %}

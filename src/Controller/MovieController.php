@@ -12,18 +12,16 @@ class MovieController extends AbstractController
     #[Route('/', name: 'movie')]
     public function index(): Response
     {
-        //$client = HttpClient::create();
-        $listMovie = $this->client('https://api.themoviedb.org/3/movie/top_rated?api_key=d2c58004100fdb2c3d65ba0058594263');
-        /*$contentType = $response->getHeaders()['content-type'][0];
-        $content = $response->getContent();
-        $listMovie = json_decode($content,true);*/
+        $listMovie = $this->client('https://api.themoviedb.org/3/movie/popular?api_key=d2c58004100fdb2c3d65ba0058594263&region=FR');
         foreach ($listMovie['results'] as $key => $value) {
           $movie[] = new Movie();
           $movie[$key]->setId($value["id"]);
           $movie[$key]->setTitle($value["title"]);
           $movie[$key]->setDescription($value["overview"]);
+          $movie[$key]->setImage($value['backdrop_path']);
+          $movie[$key]->setAvis($value['vote_average']);
         }
-                //  dd($movie);
+        //dd($listMovie);
         return $this->render('movie/index.html.twig', [
             'listMovies' => $movie,
         ]);
@@ -31,9 +29,13 @@ class MovieController extends AbstractController
     #[Route('/show/{movie_id}', name: 'movie_show')]
     public function show(int $movie_id): Response
     {
-        $listMovie = $this->client("https://api.themoviedb.org/3/movie/.$movie_id./videos?api_key=d2c58004100fdb2c3d65ba0058594263");
-        return $this->render('movie/index.html.twig', [
-            'controller_name' => 'Movies',
+        $listMovie = $this->client("https://api.themoviedb.org/3/movie/$movie_id?api_key=d2c58004100fdb2c3d65ba0058594263&region=FR&append_to_response=videos");
+        //dd($listMovie);
+        $movie = new Movie();
+        $movie->setVideos($listMovie['videos']['results']['0']['key']);
+        $movie->setTitle($listMovie['title']);
+        return $this->render('movie/show.html.twig', [
+            'movies' => $movie,
         ]);
     }
     public function client($url)
@@ -53,6 +55,8 @@ class Movie
   private string $id;
   private string $title;
   private string $description;
+  private string $avis;
+  private string $videos;
 
   function getId(){
     return $this->id;
@@ -71,5 +75,17 @@ class Movie
   }
   function setDescription(string $description){
     return $this->description=$description;
+  }
+  function getImage(){
+    return $this->image;
+  }
+  function setImage(string $image){
+    return $this->image=$image;
+  }
+  function setVideos(string $videos){
+    return $this->videos=$videos;
+  }
+  function setAvis(string $avis){
+    return $this->avis=$avis;
   }
 }
