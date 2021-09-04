@@ -11,21 +11,23 @@
   <li>Note : {{ listMovie.avis }} / 10</li>
 {% endfor %}
 </div>
+<hr>
 <div class="genre">
-
+{{ form(form) }}
 </div>
 <div class="listmovie">
   <ul>
   {% for listMovie in listMovies %}
-    <li>Titre :{{ listMovie.title }}</li>
+    <li><h4>Titre :{{ listMovie.title }}</h4></li>
     <li><img src="https://image.tmdb.org/t/p/w500/{{listMovie.image}}"height=200px width=300px alt=""></li>
     <li>
       <a href="/show/{{ listMovie.id }}" onclick="javascript:window.open(this.href,'nom_Popup','height=400', 'width=400' ,'location=no' ,'resizable=yes');return false;">
         <button type="button" name="button" class="btn">Bande d'annonce</button>
       </a>
     </li>
-    <li>Note : {{ listMovie.avis }} / 10</li>
+    <li><strong>Note : {{ listMovie.avis }} / 10</strong></li>
     <li> Description : {{ listMovie.description }}</li>
+    <hr>
 {% endfor %}
 </ul>
 </div>

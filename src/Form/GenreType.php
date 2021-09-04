@@ -4,8 +4,9 @@ namespace App\Form;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use App\Form\Type\CheckboxType;
+
 
 class GenreType extends AbstractType
 {
@@ -15,7 +16,7 @@ class GenreType extends AbstractType
       ->add('action', CheckboxType::class, [
           'label'    => 'Action',
           'required' => false,
-      ]);
+      ])
       ->add('aventure', CheckboxType::class, [
           'label'    => 'Aventure',
           'required' => false,
