@@ -4,6 +4,11 @@
 
 {% block body %}
 
+<div class="nav">
+  <h3>We Movie</h3>
+  {{ form(search) }}
+</div>
+
 <div class="promo">
 {% for listMovie in listMovies|slice(0,1) %}
   <li>Titre :{{ listMovie.title }}</li>
@@ -11,17 +16,17 @@
   <li>Note : {{ listMovie.avis }} / 10</li>
 {% endfor %}
 </div>
-<hr>
 <div class="genre">
 {{ form(form) }}
 </div>
 <div class="listmovie">
   <ul>
+    <h3>Top office : </h3>
   {% for listMovie in listMovies %}
     <li><h4>Titre :{{ listMovie.title }}</h4></li>
     <li><img src="https://image.tmdb.org/t/p/w500/{{listMovie.image}}"height=200px width=300px alt=""></li>
     <li>
-      <a href="/show/{{ listMovie.id }}" onclick="javascript:window.open(this.href,'nom_Popup','height=400', 'width=400' ,'location=no' ,'resizable=yes');return false;">
+      <a href="/show/{{ listMovie.id }}" onclick="javascript:window.open(this.href,'nom_Popup','height=400', 'width=200' ,'location=no' ,'resizable=yes');return false;">
         <button type="button" name="button" class="btn">Bande d'annonce</button>
       </a>
     </li>

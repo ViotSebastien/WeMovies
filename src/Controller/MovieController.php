@@ -7,6 +7,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Form\GenreType;
+use App\Form\SearchKeywordType;
 use Symfony\Component\HttpFoundation\Request;
 
 class MovieController extends AbstractController
@@ -18,37 +19,52 @@ class MovieController extends AbstractController
         $movie=$this->createlist($listMovie);
         $movie_id = $movie['0']->getId();
         $promo=$this->client("https://api.themoviedb.org/3/movie/$movie_id?api_key=d2c58004100fdb2c3d65ba0058594263&region=FR&append_to_response=videos");
-        //dd($listMovie);
 
+        $test=$this->client('https://api.themoviedb.org/3/genre/movie/list?api_key=d2c58004100fdb2c3d65ba0058594263&language=en-US');
+        //dd($test["genres"]);
         $form = $this->createForm(GenreType::class);
+        $search = $this->createForm(SearchKeywordType::class);
         $form->handleRequest($request);
+        $search->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
           $genre = $form->getData();
-          switch ($genre['name']) {
-            case 'action':
-              $listMovie = $this->client('https://api.themoviedb.org/3/movie/popular?api_key=d2c58004100fdb2c3d65ba0058594263&region=FR');
-              $movie=$this->createlist($listMovie);
-              if (movie['']) {
-                // code...
-              }
-              break;
-            case 'aventure':
-              // code...
-              break;
+          $listMovie = $this->client('https://api.themoviedb.org/3/movie/popular?api_key=d2c58004100fdb2c3d65ba0058594263&region=FR');
+          $movies=$this->createlist($listMovie);
+          if ($genre['action'] === true) {
+            $movie='test';
+            foreach ($movies as $key => $value) {
+              $movie[] = new Movie();
+              $movie[$key]->setId($value["id"]);
+              $movie[$key]->setTitle($value["title"]);
+              $movie[$key]->setDescription($value["overview"]);
+              $movie[$key]->setImage($value['backdrop_path']);
+              $movie[$key]->setAvis($value['vote_average']);
+              $movie[$key]->setGenre($value['genre_ids']);
+            }
+            dd($genre['action']);
+            return $movie;
+          }elseif ($genre['aventure'] === true) {
+            $movie='test';
+            return $movie;
           }
+        }
+
+        if ($search->isSubmitted() && $search->isValid()) {
+          $search = $search->getData();
+          dd($search);
         }
         return $this->render('movie/index.html.twig', [
             'listMovies' => $movie,
             'promo' => $promo['videos']['results']['0']['key'],
             'form' => $form->createView(),
+            'search' => $search->createView(),
         ]);
     }
     #[Route('/show/{movie_id}', name: 'movie_show')]
     public function show(int $movie_id): Response
     {
         $listMovie = $this->client("https://api.themoviedb.org/3/movie/$movie_id?api_key=d2c58004100fdb2c3d65ba0058594263&region=FR&append_to_response=videos");
-        //dd($listMovie);
         $movie = new Movie();
         $movie->setVideos($listMovie['videos']['results']['0']['key']);
         $movie->setTitle($listMovie['title']);
@@ -72,7 +88,7 @@ class MovieController extends AbstractController
         $movie[$key]->setDescription($value["overview"]);
         $movie[$key]->setImage($value['backdrop_path']);
         $movie[$key]->setAvis($value['vote_average']);
-        $movie[$key]->setGenre($value['genre_ids']['0']);
+        $movie[$key]->setGenre($value['genre_ids']);
       }
       return $movie;
     }
@@ -87,7 +103,7 @@ class Movie
   private string $description;
   private string $avis;
   private string $videos;
-  private int $genre;
+  private array $genre;
 
   function getId(){
     return $this->id;
@@ -128,7 +144,7 @@ class Movie
   function getGenre(){
     return $this->genre;
   }
-  function setGenre(int $genre){
+  function setGenre(array $genre){
     return $this->genre=$genre;
   }
 }
