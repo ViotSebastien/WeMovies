@@ -16,37 +16,26 @@ class MovieController extends AbstractController
     public function index(Request $request): Response
     {
         $listMovie = $this->client('https://api.themoviedb.org/3/movie/popular?api_key=d2c58004100fdb2c3d65ba0058594263&region=FR');
-        $movie=$this->createlist($listMovie);
-        $movie_id = $movie['0']->getId();
+        $movies=$this->createlist($listMovie);
+        $movie_id = $movies['0']->getId();
         $promo=$this->client("https://api.themoviedb.org/3/movie/$movie_id?api_key=d2c58004100fdb2c3d65ba0058594263&region=FR&append_to_response=videos");
+        $test=$this->client('https://api.themoviedb.org/3/genre/movie/list?api_key=d2c58004100fdb2c3d65ba0058594263&language=fr-FR');
 
-        $test=$this->client('https://api.themoviedb.org/3/genre/movie/list?api_key=d2c58004100fdb2c3d65ba0058594263&language=en-US');
-        //dd($test["genres"]);
         $form = $this->createForm(GenreType::class);
         $search = $this->createForm(SearchKeywordType::class);
         $form->handleRequest($request);
         $search->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+          $listMovie=null;
+          $movies=null;
           $genre = $form->getData();
           $listMovie = $this->client('https://api.themoviedb.org/3/movie/popular?api_key=d2c58004100fdb2c3d65ba0058594263&region=FR');
           $movies=$this->createlist($listMovie);
-          if ($genre['action'] === true) {
-            $movie='test';
-            foreach ($movies as $key => $value) {
-              $movie[] = new Movie();
-              $movie[$key]->setId($value["id"]);
-              $movie[$key]->setTitle($value["title"]);
-              $movie[$key]->setDescription($value["overview"]);
-              $movie[$key]->setImage($value['backdrop_path']);
-              $movie[$key]->setAvis($value['vote_average']);
-              $movie[$key]->setGenre($value['genre_ids']);
-            }
-            dd($genre['action']);
-            return $movie;
-          }elseif ($genre['aventure'] === true) {
-            $movie='test';
-            return $movie;
+          if ($genre['Action'] === true) {
+            $movies=$this->createListGenre($movies, 28);
+          }elseif ($genre['Aventure'] === true) {
+            $movies=$this->createListGenre($movies, 12);
           }
         }
 
@@ -55,7 +44,7 @@ class MovieController extends AbstractController
           dd($search);
         }
         return $this->render('movie/index.html.twig', [
-            'listMovies' => $movie,
+            'listMovies' => $movies,
             'promo' => $promo['videos']['results']['0']['key'],
             'form' => $form->createView(),
             'search' => $search->createView(),
@@ -65,11 +54,11 @@ class MovieController extends AbstractController
     public function show(int $movie_id): Response
     {
         $listMovie = $this->client("https://api.themoviedb.org/3/movie/$movie_id?api_key=d2c58004100fdb2c3d65ba0058594263&region=FR&append_to_response=videos");
-        $movie = new Movie();
-        $movie->setVideos($listMovie['videos']['results']['0']['key']);
-        $movie->setTitle($listMovie['title']);
+        $movieShow = new Movie();
+        $movieShow->setVideos($listMovie['videos']['results']['0']['key']);
+        $movieShow->setTitle($listMovie['title']);
         return $this->render('movie/show.html.twig', [
-            'movie' => $movie,
+            'movie' => $movieShow,
         ]);
     }
     public function client($url)
@@ -80,7 +69,9 @@ class MovieController extends AbstractController
       $content = $response->getContent();
       return json_decode($content,true);
     }
+
     public function createlist(array $listMovie){
+      $movie= null;
       foreach ($listMovie['results'] as $key => $value) {
         $movie[] = new Movie();
         $movie[$key]->setId($value["id"]);
@@ -92,17 +83,42 @@ class MovieController extends AbstractController
       }
       return $movie;
     }
+
+    public function createListGenre(array $movies,int $genre_id){
+      $movieGenre= null;
+      $i=0;
+      foreach ($movies as $key => $value) {
+        foreach ($value->getGenre() as $key1 => $value1) {
+          if ($value1 === $genre_id) {
+            $movieGenre[] = new Movie();
+            $movieGenre[$i]->setId($value->getId());
+            $movieGenre[$i]->setTitle($value->getTitle());
+            $movieGenre[$i]->setDescription($value->getDescription());
+            $movieGenre[$i]->setImage($value->getImage());
+            $movieGenre[$i]->setAvis($value->getAvis());
+            $movieGenre[$i]->setGenre($value->getGenre());
+            $i++;
+          }else {
+            //unset($movieGenre[$key]);
+          }
+        }
+      }
+      return $movieGenre;
+    }
 }
+
 /**
  *
  */
 class Movie
 {
-  private string $id;
-  private string $title;
-  private string $description;
-  private string $avis;
-  private string $videos;
+  private ?string $id = null;
+  private ?string $title = null;
+  private ?string $description = null;
+  private ?string $image = null;
+  private ?string $avis = null;
+  private ?string $videos = null;
+
   private array $genre;
 
   function getId(){
