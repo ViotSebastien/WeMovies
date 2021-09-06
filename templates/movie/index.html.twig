@@ -1,18 +1,22 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}MovieController!{% endblock %}
+{% block header %}
 
+{% endblock %}
 {% block body %}
 
-<div class="nav">
-  <h3>We Movie</h3>
-  {{ form(search) }}
-</div>
+<nav>
+  <h3 class="nav-title">We Movie</h3>
+  <div class="nav-search">
+    {{ form(search) }}
+  </div>
+</nav>
 
 <div class="promo">
 {% for listMovie in listMovies|slice(0,1) %}
   <li>Titre :{{ listMovie.title }}</li>
-    <iframe width="420" height="315" src="https://www.youtube.com/embed/{{ promo }}?controls=0"></iframe>
+    <iframe width="1000" height="500" src="https://www.youtube.com/embed/{{ keyVideos }}?controls=1"></iframe>
   <li>Note : {{ listMovie.avis }} / 10</li>
 {% endfor %}
 </div>
@@ -24,9 +28,9 @@
     <h3>Top office : </h3>
   {% for listMovie in listMovies %}
     <li><h4>Titre :{{ listMovie.title }}</h4></li>
-    <li><img src="https://image.tmdb.org/t/p/w500/{{listMovie.image}}"height=200px width=300px alt=""></li>
+    <li style="text-align=center"><img src="https://image.tmdb.org/t/p/w500/{{listMovie.image}}"height=300px width=400px alt=""></li>
     <li>
-      <a href="/show/{{ listMovie.id }}" onclick="javascript:window.open(this.href,'nom_Popup','height=400', 'width=200' ,'location=no' ,'resizable=yes');return false;">
+      <a href="/show/{{ listMovie.id }}" onclick="javascript:window.open(this.href,'nom_Popup','height=500', 'width=1500' ,'location=no' ,'resizable=yes');return false;">
         <button type="button" name="button" class="btn">Bande d'annonce</button>
       </a>
     </li>

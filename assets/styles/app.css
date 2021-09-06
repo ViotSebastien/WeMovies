@@ -1,5 +1,7 @@
 body {
     background-color: white;
+    width: auto;
+    height: auto;
 }
 
 div.listmovie {
@@ -14,28 +16,37 @@ div.listmovie {
 }
 div.promo {
   list-style-type: none;
-  display: block;
-  width: 500px;
+  display: table;
+  width: auto;
   text-align: justify;
   height: auto;
   margin: auto;
 }
 div.genre {
   list-style-type: none;
-  display: block;
+  display: grid;
   text-align: justify;
-  width: 900px;
-  height: auto;
+  width: 143px;
+  height: 124px;
   margin-left: 100px;
   margin-top: 200px;
   float: left;
-  border-radius: 5px;
   position: absolute;
+  border-radius: 25px;
+  border-color: black;
+  background-color: silver;
+  align-content: center;
+  justify-content: center;
+  align-items: center;
+  justify-items: center;
 }
 
 ul{
   list-style-type: none;
   float: right;
+  border-radius: 25px;
+  border-color: black;
+  background-color: silver;
 }
 
 img{
@@ -46,4 +57,22 @@ button{
   border-radius: 5px;
   color: white;
   background-color: blue;
+}
+
+nav {
+  background-color: silver;
+  margin-bottom: 50px;
+  display: flow-root;
+  border-radius: 25px;
+  border-color: black;
+
+}
+.nav-title {
+    float: left;
+    margin-left: 15px;
+}
+
+.nav-search{
+  float: right;
+  margin-right: 15px;
 }

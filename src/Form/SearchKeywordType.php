@@ -14,10 +14,9 @@ class SearchKeywordType extends AbstractType
     {
         $builder
         ->add('search', SearchType::class,[
-            'label'    => 'Action',
             'required' => false,
         ])
-        ->add('save', SubmitType::class, [
+        ->add('OK', SubmitType::class, [
           'attr' => ['class' => 'save'],
         ]);
     }

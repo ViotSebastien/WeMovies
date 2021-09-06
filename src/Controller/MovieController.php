@@ -45,7 +45,7 @@ class MovieController extends AbstractController
         }
         return $this->render('movie/index.html.twig', [
             'listMovies' => $movies,
-            'promo' => $promo['videos']['results']['0']['key'],
+            'keyVideos' => $promo['videos']['results']['0']['key'],
             'form' => $form->createView(),
             'search' => $search->createView(),
         ]);
